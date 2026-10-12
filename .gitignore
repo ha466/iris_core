@@ -1,0 +1,39 @@
+# Python cache & virtualenv
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+env/
+venv/
+
+# Large Model Weights (>100MB violates GitHub file limits)
+core/modal/*.gguf
+core/tts/*.pth
+core/tts/*.pt
+
+# Server Executables and Binaries
+core/bin/llama-*
+core/bin/parakeet-*
+core/bin/**/*.exe
+core/bin/**/*.dll
+
+# Memory Databases, Caches & Logs
+core/mem/*.db
+core/mem/*.db-wal
+core/mem/*.db-shm
+*.db
+*.db-wal
+*.db-shm
+*.npz
+*.tmp*
+*.log
+
+# Audio output artifacts & samples
+*.wav
+*.mp3
+
+# IDE & Editor configs
+.vscode/
+.idea/
+.agents/

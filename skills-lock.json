@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "pipecat": {
+      "source": "itechmeat/llm-code",
+      "sourceType": "github",
+      "skillPath": "skills/pipecat/SKILL.md",
+      "computedHash": "b3f2ab3f61ca94536079c1f2a9efec8b0d0fc8c1cb6183cd3abc0da5b039478d"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+[project]
+name = "iris"
+version = "0.1.0"
+description = "Iris: Low-latency hands-free companion voice assistant"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "torch",
+    "sounddevice",
+    "numpy",
+    "scipy",
+    "httpx",
+    "onnxruntime",
+    "loguru",
+    "misaki[en]",
+    "transformers",
+    "colorama",
+    "pipecat-ai[silero]",
+]
+
+
+[tool.uv]
+package = false
