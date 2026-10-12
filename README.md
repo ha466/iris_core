@@ -27,6 +27,7 @@
 
 ```
 iris_core/
+├── setup.py                  # Automated downloader for server binaries and models
 ├── config.py                 # Centralized configuration (ports, models, sampling, prompts)
 ├── main.py                   # Main entry point with hands-free terminal interface
 ├── benchmark.py              # End-to-end latency and synthesis benchmark script
@@ -69,12 +70,16 @@ python -m venv .venv
 pip install -r pyproject.toml   # or uv sync
 ```
 
-### 3. Model Weights & Binaries
-Place the required model weights and executables into their respective folders (ignored by git):
-- **LLM**: Place `Ling-3.0-tiny-Q4_0.gguf` in `core/modal/`
-- **STT**: Place `tdt_ctc-110m-f16.gguf` in `core/modal/`
-- **TTS**: Place `kokoro_en_7m.pth` and `af_msa.pt` in `core/tts/`
-- **Binaries**: Place `llama-server.exe` in `core/bin/llama-b10587-bin-win-cpu-x64/` and `parakeet-server.exe` in `core/bin/parakeet-v0.5.0-bin-win-cpu-x64/`
+### 3. Automated Model & Binary Setup
+Run the automated asset installer to download and configure `core/bin` server executables, `core/modal` speech/language models, and `core/tts` voice weights:
+
+```powershell
+# Automatically download and unpack all required models and binaries
+python setup.py
+
+# Or verify asset status without downloading:
+python setup.py --check
+```
 
 ### 4. Running the Companion
 ```powershell
