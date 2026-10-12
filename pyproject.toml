@@ -1,7 +1,7 @@
 [project]
-name = "iris"
+name = "iris-core"
 version = "0.1.0"
-description = "Iris: Low-latency hands-free companion voice assistant"
+description = "iris_core: Low-latency hands-free companion AI voice system"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

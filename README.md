@@ -60,46 +60,55 @@ iris_core/
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
-- Python 3.12 (or virtual environment)
+- **[uv](https://docs.astral.sh/uv/)** (Fast Python package and project manager)
 - Windows x64 (or Linux/macOS with appropriate binaries)
 
-### 2. Setup Virtual Environment
+If `uv` is not yet installed on Windows:
 ```powershell
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r pyproject.toml   # or uv sync
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### 2. Environment Setup (Sync Dependencies)
+Clone the repository and sync dependencies:
+```powershell
+git clone https://github.com/ha466/iris_core.git
+cd iris_core
+
+# Automatically creates .venv and synchronizes all dependencies from uv.lock
+uv sync
 ```
 
 ### 3. Automated Model & Binary Setup
-Run the automated asset installer to download and configure `core/bin` server executables, `core/modal` speech/language models, and `core/tts` voice weights:
+Run the automated installer with `uv run` to download and configure `core/bin` server executables (`llama-server.exe` & `parakeet-server.exe`), `core/modal` speech/language models (`Ling-3.0-tiny` & `Parakeet`), and `core/tts` voice weights:
 
 ```powershell
 # Automatically download and unpack all required models and binaries
-python setup.py
+uv run setup.py
 
 # Or verify asset status without downloading:
-python setup.py --check
+uv run setup.py --check
 ```
 
 ### 4. Running the Companion
+Launch the hands-free voice companion:
 ```powershell
-python main.py
+uv run main.py
 ```
 
 ---
 
 ## 🧪 Testing & Benchmarks
 
-Run the complete test suite:
+Run the complete test suite directly with `uv run`:
 ```powershell
 # Unit & integration tests
-python tests\test_companion_intelligence.py
-python tests\test_memory_intelligence.py
-python tests\test_memory_sqlite.py
-python tests\test_components.py
+uv run tests\test_companion_intelligence.py
+uv run tests\test_memory_intelligence.py
+uv run tests\test_memory_sqlite.py
+uv run tests\test_components.py
 
 # End-to-end performance benchmark
-python benchmark.py
+uv run benchmark.py
 ```
 
 ### Benchmark Highlights (Local CPU)
