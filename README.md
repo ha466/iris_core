@@ -111,10 +111,49 @@ uv run tests\test_components.py
 uv run benchmark.py
 ```
 
-### Benchmark Highlights (Local CPU)
-| Pipeline Stage | Metric | Measured Result |
-|---|---|---|
-| **Kokoro-7M TTS** | Real-Time Factor (RTF) | **0.095** (10.5x real-time) |
-| **Direct Memory Retrieval** | Time-To-First-Audio (TTFA) | **~457 ms** |
-| **Memory Write (Explicit)** | Time-To-First-Audio (TTFA) | **~625 ms** |
-| **Parakeet STT** | Latency | **~180 ms** |
+---
+
+### 💻 Benchmark System Specifications
+
+All benchmarks were measured on a consumer-grade workstation running 100% locally on CPU with zero cloud calls or discrete GPU acceleration:
+
+| Component | Specification |
+|---|---|
+| **CPU** | Intel Core i7-7700 @ 3.60GHz (4 Cores, 8 Logical Processors) |
+| **RAM** | 16 GB DDR4 (15.9 GB usable) |
+| **Operating System** | Microsoft Windows 11 Pro (x64) |
+| **Python Runtime** | Python 3.12 (Astral `uv` environment) |
+| **Inference Engines** | `llama.cpp` (b10587, AVX2 / OpenMP) + `parakeet.cpp` (v0.5.0) |
+| **Hardware Offload** | **100% CPU Inference** (Zero discrete GPU required) |
+
+---
+
+### 📊 Measured Pipeline Performance
+
+#### 1. Kokoro-7M Distilled TTS (CPU Synthesis)
+Measured across multiple utterance lengths at 24kHz audio output rate:
+
+| Prompt Length | Characters | Latency | Audio Output | Real-Time Factor (RTF) | Synthesis Speed |
+|---|---|---|---|---|---|
+| **Short** | 48 chars | 333.9 ms | 3.62 s | **0.092** | **10.9x real-time** |
+| **Medium** | 107 chars | 643.7 ms | 6.70 s | **0.096** | **10.4x real-time** |
+| **Long** | 167 chars | 966.7 ms | 9.97 s | **0.097** | **10.3x real-time** |
+| **Average** | — | — | — | **0.095** | **10.5x real-time** |
+
+> *Note: RTF < 0.10 means Kokoro generates 10 seconds of high-fidelity spoken audio in less than 1 second on a standard 4-core CPU.*
+
+#### 2. End-to-End Turn Latencies (`benchmark.py`)
+Measured with synthetic 16kHz speech input through Parakeet STT, SQLite memory routing, Ling-3.0-tiny LLM streaming, sentence chunking, and concurrent Kokoro synthesis:
+
+| Interaction Type | Utterance Sample | STT Latency | Memory Routing | TTFA (Time-To-First-Audio) | Total Turn Duration |
+|---|---|---|---|---|---|
+| **Direct Memory Read** | *"what is my name"* | 183.6 ms | **6.7 ms** | **457.4 ms** (Instant) | 457.4 ms |
+| **Explicit Memory Write** | *"please remember that I love espresso"* | 219.9 ms | **11.4 ms** | **625.4 ms** (Instant) | 625.4 ms |
+| **Personal Companion Chat** | *"how are you doing today, Iris?"* | 176.0 ms | 3.7 ms | ~7.7 s | 8.9 s |
+| **Creative / Knowledge Query** | *"tell me one fun fact about space"* | 197.6 ms | 0.9 ms | ~8.7 s | 11.1 s |
+
+#### 3. Memory & Storage Footprint
+- **Memory Hot Path**: Instant regex rules & direct cache lookups execute in **< 1 ms**.
+- **FTS5 & Hybrid Search**: SQLite full-text search combined with vector similarity completes in **< 10 ms**.
+- **On-Disk Database**: SQLite database file with WAL logging requires **< 10 MB** for thousands of turns and persistent facts.
+- **RAM Footprint**: ~5.8 GB total system RAM during full pipeline execution (including `llama-server`, `parakeet-server`, in-memory VAD, and TTS).
